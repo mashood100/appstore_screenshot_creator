@@ -5,10 +5,11 @@ import SlideWrapper from './SlideWrapper';
 import Phone from '../mockups/Phone';
 import IPad from '../mockups/IPad';
 import Caption from '../typography/Caption';
+import DraggableCaption from './DraggableCaption';
 import GradientBlob from '../decorative/GradientBlob';
 
 export default function HeroSlide(props: SlideProps) {
-  const { canvasW, canvasH, theme, copy, screenshots, appIcon, device, slideConfig, stylePreset } = props;
+  const { canvasW, canvasH, theme, copy, screenshots, appIcon, device, slideConfig, stylePreset, onTextChange, isEditable, onPositionChange } = props;
   const screenshotSrc = screenshots[slideConfig.screenshotIndex]?.dataUrl || screenshots[0]?.dataUrl || null;
   const isDevice = device === 'ipad';
   const showDecorations = stylePreset !== 'flat';
@@ -71,8 +72,13 @@ export default function HeroSlide(props: SlideProps) {
       )}
 
       {/* Hero headline */}
-      <div
-        style={{
+      <DraggableCaption
+        canvasW={canvasW}
+        canvasH={canvasH}
+        textPosition={slideConfig.textPosition}
+        onPositionChange={onPositionChange}
+        isEditable={isEditable}
+        defaultStyle={{
           position: 'absolute',
           top: appIcon ? canvasH * 0.2 : canvasH * 0.12,
           left: '50%',
@@ -89,8 +95,10 @@ export default function HeroSlide(props: SlideProps) {
           accentColor={theme.accent}
           align="center"
           isHero
+          onTextChange={onTextChange}
+          isEditable={isEditable}
         />
-      </div>
+      </DraggableCaption>
 
       {/* Device mockup at bottom */}
       <div

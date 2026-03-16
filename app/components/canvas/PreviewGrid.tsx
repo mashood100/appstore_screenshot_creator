@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useDashboard } from '../context/DashboardContext';
 import { THEMES, IPHONE_W, IPHONE_H, IPAD_W, IPAD_H, RTL_LOCALES, MAX_SLIDES, SLIDE_DESIGNS } from '../constants';
-import { SlideProps, SlideConfig, SlideType } from '../types';
+import { SlideProps, SlideConfig, SlideType, TextPosition } from '../types';
 import ScreenshotPreview from './ScreenshotPreview';
 import SlideDesignPicker from './SlideDesignPicker';
 import HeroSlide from '../slides/HeroSlide';
@@ -96,6 +96,19 @@ export default function PreviewGrid({ onExportSlide }: PreviewGridProps) {
             uiElements: state.uiElements.map(e => e.dataUrl),
             stylePreset: state.stylePreset,
             slideConfig,
+            isEditable: true,
+            onTextChange: (field, value) => {
+              dispatch({
+                type: 'UPDATE_SLIDE',
+                payload: { id: slideConfig.id, changes: { [field]: value } },
+              });
+            },
+            onPositionChange: (position: TextPosition) => {
+              dispatch({
+                type: 'UPDATE_SLIDE',
+                payload: { id: slideConfig.id, changes: { textPosition: position } },
+              });
+            },
           };
 
           return (

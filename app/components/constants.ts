@@ -1,6 +1,6 @@
 import { ThemeTokens, ThemeId, ExportSize, StylePreset, SlideType, SlideLayout } from './types';
 
-// Max slides allowed (keeps Claude API responses manageable)
+// Max slides allowed
 export const MAX_SLIDES = 5;
 
 // Canvas design sizes (design at largest, scale for export)

@@ -1,17 +1,14 @@
 'use client';
 
-import { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useReducer, ReactNode } from 'react';
 import {
   DashboardState,
   DashboardAction,
   SlideConfig,
-  GeneratedConfig,
 } from '../types';
 import { IPHONE_SIZES, THEMES, MAX_SLIDES } from '../constants';
 
 const initialState: DashboardState = {
-  apiKey: '',
-  appDescription: '',
   screenshots: [],
   appIcon: null,
   uiElements: [],
@@ -28,18 +25,12 @@ const initialState: DashboardState = {
   activeLocale: 'en',
   sidebarOpen: true,
   selectedSlideIndex: null,
-  generating: false,
   exporting: false,
   exportProgress: null,
-  error: null,
 };
 
 function dashboardReducer(state: DashboardState, action: DashboardAction): DashboardState {
   switch (action.type) {
-    case 'SET_API_KEY':
-      return { ...state, apiKey: action.payload };
-    case 'SET_APP_DESCRIPTION':
-      return { ...state, appDescription: action.payload };
     case 'SET_SCREENSHOTS':
       return { ...state, screenshots: action.payload };
     case 'ADD_SCREENSHOT':
@@ -120,28 +111,13 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
       return { ...state, sidebarOpen: !state.sidebarOpen };
     case 'SELECT_SLIDE':
       return { ...state, selectedSlideIndex: action.payload };
-    case 'SET_GENERATING':
-      return { ...state, generating: action.payload };
     case 'SET_EXPORTING':
       return { ...state, exporting: action.payload };
     case 'SET_EXPORT_PROGRESS':
       return { ...state, exportProgress: action.payload };
-    case 'SET_ERROR':
-      return { ...state, error: action.payload };
-    case 'SET_GENERATED_CONFIG': {
-      const config: GeneratedConfig = action.payload;
-      const cappedSlides = config.slides.slice(0, MAX_SLIDES);
-      return {
-        ...state,
-        colors: config.colors,
-        themeId: config.themeId,
-        features: config.features,
-        slideCount: cappedSlides.length,
-        slides: cappedSlides,
-        fontFamily: config.fontSuggestion || state.fontFamily,
-        stylePreset: config.styleSuggestion || state.stylePreset,
-        generating: false,
-      };
+    case 'UPDATE_SLIDE': {
+      const { id, changes } = action.payload;
+      return { ...state, slides: state.slides.map(s => s.id === id ? { ...s, ...changes } : s) };
     }
     default:
       return state;
@@ -152,14 +128,6 @@ const DashboardContext = createContext<[DashboardState, React.Dispatch<Dashboard
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
-
-  // Load API key from localStorage on mount
-  useEffect(() => {
-    const savedKey = localStorage.getItem('claude-api-key');
-    if (savedKey) {
-      dispatch({ type: 'SET_API_KEY', payload: savedKey });
-    }
-  }, []);
 
   return (
     <DashboardContext.Provider value={[state, dispatch]}>

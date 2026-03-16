@@ -5,10 +5,11 @@ import SlideWrapper from './SlideWrapper';
 import Phone from '../mockups/Phone';
 import IPad from '../mockups/IPad';
 import Caption from '../typography/Caption';
+import DraggableCaption from './DraggableCaption';
 import GlowOrb from '../decorative/GlowOrb';
 
 export default function DifferentiatorSlide(props: SlideProps) {
-  const { canvasW, canvasH, theme, copy, screenshots, device, slideConfig, isRtl, stylePreset } = props;
+  const { canvasW, canvasH, theme, copy, screenshots, device, slideConfig, isRtl, stylePreset, onTextChange, isEditable, onPositionChange } = props;
   const screenshotSrc = screenshots[slideConfig.screenshotIndex]?.dataUrl || screenshots[1]?.dataUrl || screenshots[0]?.dataUrl || null;
   const isIPad = device === 'ipad';
   const showDecorations = stylePreset !== 'flat';
@@ -36,8 +37,13 @@ export default function DifferentiatorSlide(props: SlideProps) {
       )}
 
       {/* Caption at top */}
-      <div
-        style={{
+      <DraggableCaption
+        canvasW={canvasW}
+        canvasH={canvasH}
+        textPosition={slideConfig.textPosition}
+        onPositionChange={onPositionChange}
+        isEditable={isEditable}
+        defaultStyle={{
           position: 'absolute',
           top: canvasH * 0.1,
           left: isRtl ? undefined : canvasW * 0.08,
@@ -53,8 +59,10 @@ export default function DifferentiatorSlide(props: SlideProps) {
           color={theme.fg}
           accentColor={theme.accent}
           align={isRtl ? 'right' : 'left'}
+          onTextChange={onTextChange}
+          isEditable={isEditable}
         />
-      </div>
+      </DraggableCaption>
 
       {/* Phone offset to the right (or left for RTL) */}
       <div

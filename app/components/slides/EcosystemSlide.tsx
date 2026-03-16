@@ -5,10 +5,11 @@ import SlideWrapper from './SlideWrapper';
 import Phone from '../mockups/Phone';
 import IPad from '../mockups/IPad';
 import Caption from '../typography/Caption';
+import DraggableCaption from './DraggableCaption';
 import GradientBlob from '../decorative/GradientBlob';
 
 export default function EcosystemSlide(props: SlideProps) {
-  const { canvasW, canvasH, theme, copy, screenshots, device, slideConfig, stylePreset } = props;
+  const { canvasW, canvasH, theme, copy, screenshots, device, slideConfig, stylePreset, onTextChange, isEditable, onPositionChange } = props;
   const screenshotSrc1 = screenshots[slideConfig.screenshotIndex]?.dataUrl || screenshots[0]?.dataUrl || null;
   const screenshotSrc2 = screenshots[(slideConfig.screenshotIndex + 1) % Math.max(screenshots.length, 1)]?.dataUrl || screenshots[0]?.dataUrl || null;
   const isIPad = device === 'ipad';
@@ -37,8 +38,13 @@ export default function EcosystemSlide(props: SlideProps) {
       )}
 
       {/* Caption at top center */}
-      <div
-        style={{
+      <DraggableCaption
+        canvasW={canvasW}
+        canvasH={canvasH}
+        textPosition={slideConfig.textPosition}
+        onPositionChange={onPositionChange}
+        isEditable={isEditable}
+        defaultStyle={{
           position: 'absolute',
           top: canvasH * 0.08,
           left: '50%',
@@ -54,8 +60,10 @@ export default function EcosystemSlide(props: SlideProps) {
           color={theme.fg}
           accentColor={theme.accent}
           align="center"
+          onTextChange={onTextChange}
+          isEditable={isEditable}
         />
-      </div>
+      </DraggableCaption>
 
       {/* Two phones layered */}
       {/* Back phone */}

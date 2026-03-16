@@ -26,6 +26,7 @@ export default function SlideWrapper({
 }: SlideWrapperProps) {
   return (
     <div
+      data-slide-canvas
       style={{
         width: canvasW,
         height: canvasH,

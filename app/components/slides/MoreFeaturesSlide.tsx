@@ -3,10 +3,11 @@
 import { SlideProps } from '../types';
 import SlideWrapper from './SlideWrapper';
 import Caption from '../typography/Caption';
+import DraggableCaption from './DraggableCaption';
 import GradientBlob from '../decorative/GradientBlob';
 
 export default function MoreFeaturesSlide(props: SlideProps) {
-  const { canvasW, canvasH, theme, copy, appIcon, features, stylePreset } = props;
+  const { canvasW, canvasH, theme, copy, appIcon, features, stylePreset, onTextChange, isEditable, onPositionChange, slideConfig } = props;
   const showDecorations = stylePreset !== 'flat';
 
   // Dark background for contrast
@@ -51,8 +52,13 @@ export default function MoreFeaturesSlide(props: SlideProps) {
       )}
 
       {/* Headline */}
-      <div
-        style={{
+      <DraggableCaption
+        canvasW={canvasW}
+        canvasH={canvasH}
+        textPosition={slideConfig.textPosition}
+        onPositionChange={onPositionChange}
+        isEditable={isEditable}
+        defaultStyle={{
           position: 'absolute',
           top: appIcon ? canvasH * 0.22 : canvasH * 0.12,
           left: '50%',
@@ -68,8 +74,10 @@ export default function MoreFeaturesSlide(props: SlideProps) {
           color={theme.bg}
           accentColor={theme.accent}
           align="center"
+          onTextChange={onTextChange}
+          isEditable={isEditable}
         />
-      </div>
+      </DraggableCaption>
 
       {/* Feature pills grid */}
       <div

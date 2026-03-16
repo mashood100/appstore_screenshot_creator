@@ -2,9 +2,6 @@
 
 import { useState } from 'react';
 import { useDashboard } from '../context/DashboardContext';
-import ApiKeyInput from './ApiKeyInput';
-import AppDescriptionInput from './AppDescriptionInput';
-import GenerateButton from './GenerateButton';
 import ScreenshotUploader from './ScreenshotUploader';
 import IconUploader from './IconUploader';
 import UIElementUploader from './UIElementUploader';
@@ -108,13 +105,6 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* Configuration */}
-      <Section title="Configuration" defaultOpen={true}>
-        <ApiKeyInput />
-        <AppDescriptionInput />
-        <GenerateButton />
-      </Section>
-
       {/* Screenshots */}
       <Section title="Screenshots" defaultOpen={true}>
         <ScreenshotUploader />
@@ -140,7 +130,29 @@ export default function Sidebar() {
           <p className="text-xs" style={{ color: 'var(--muted)' }}>
             {state.slides.length}/{MAX_SLIDES} — Use the + button in the preview area to add slides
           </p>
+          <p className="text-xs mt-1" style={{ color: 'var(--muted)' }}>
+            Click text to edit. Drag text to reposition.
+          </p>
         </div>
+        {state.selectedSlideIndex !== null && state.slides[state.selectedSlideIndex]?.textPosition && (
+          <button
+            onClick={() => {
+              const slide = state.slides[state.selectedSlideIndex!];
+              dispatch({
+                type: 'UPDATE_SLIDE',
+                payload: { id: slide.id, changes: { textPosition: undefined } },
+              });
+            }}
+            className="w-full text-xs font-medium px-3 py-2 rounded transition-colors"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              color: 'var(--sidebar-fg)',
+              border: '1px solid var(--sidebar-border)',
+            }}
+          >
+            Reset Text Position
+          </button>
+        )}
       </Section>
 
       {/* Localization */}

@@ -5,10 +5,11 @@ import SlideWrapper from './SlideWrapper';
 import Phone from '../mockups/Phone';
 import IPad from '../mockups/IPad';
 import Caption from '../typography/Caption';
+import DraggableCaption from './DraggableCaption';
 import GlowOrb from '../decorative/GlowOrb';
 
 export default function CoreFeatureSlide(props: SlideProps) {
-  const { canvasW, canvasH, theme, copy, screenshots, device, slideConfig, isRtl, stylePreset } = props;
+  const { canvasW, canvasH, theme, copy, screenshots, device, slideConfig, isRtl, stylePreset, onTextChange, isEditable, onPositionChange } = props;
   const screenshotSrc = screenshots[slideConfig.screenshotIndex]?.dataUrl || screenshots[0]?.dataUrl || null;
   const isIPad = device === 'ipad';
   const showDecorations = stylePreset !== 'flat';
@@ -40,8 +41,13 @@ export default function CoreFeatureSlide(props: SlideProps) {
       )}
 
       {/* Caption */}
-      <div
-        style={{
+      <DraggableCaption
+        canvasW={canvasW}
+        canvasH={canvasH}
+        textPosition={slideConfig.textPosition}
+        onPositionChange={onPositionChange}
+        isEditable={isEditable}
+        defaultStyle={{
           position: 'absolute',
           top: canvasH * 0.08,
           left: isCentered ? '50%' : isOffsetLeft || isRtl ? undefined : canvasW * 0.08,
@@ -58,8 +64,10 @@ export default function CoreFeatureSlide(props: SlideProps) {
           color={textColor}
           accentColor={theme.accent}
           align={isCentered ? 'center' : (isOffsetLeft || isRtl) ? 'right' : 'left'}
+          onTextChange={onTextChange}
+          isEditable={isEditable}
         />
-      </div>
+      </DraggableCaption>
 
       {/* Phone */}
       <div

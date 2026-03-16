@@ -63,3 +63,10 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #4b5563;
 }
+
+/* Placeholder for empty contentEditable elements */
+[contenteditable][data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  opacity: 0.4;
+  pointer-events: none;
+}

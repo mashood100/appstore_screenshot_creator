@@ -62,6 +62,11 @@ export type SlideLayout =
   | 'two-phone'
   | 'no-phone';
 
+export interface TextPosition {
+  x: number; // percentage of canvas width (0-100)
+  y: number; // percentage of canvas height (0-100)
+}
+
 export interface SlideConfig {
   id: string;
   type: SlideType;
@@ -69,6 +74,7 @@ export interface SlideConfig {
   headline: string;
   screenshotIndex: number;
   layout: SlideLayout;
+  textPosition?: TextPosition;
 }
 
 export interface SlideCopy {
@@ -90,23 +96,12 @@ export interface SlideProps {
   uiElements: string[];
   stylePreset: StylePreset;
   slideConfig: SlideConfig;
-}
-
-export interface GeneratedConfig {
-  colors: BrandColors;
-  themeId: ThemeId;
-  features: Feature[];
-  slideCount: number;
-  slides: SlideConfig[];
-  fontSuggestion: string;
-  styleSuggestion: StylePreset;
+  onTextChange?: (field: 'headline' | 'categoryLabel', value: string) => void;
+  onPositionChange?: (position: TextPosition) => void;
+  isEditable?: boolean;
 }
 
 export interface DashboardState {
-  // API
-  apiKey: string;
-  appDescription: string;
-
   // Uploads
   screenshots: ScreenshotFile[];
   appIcon: string | null;
@@ -134,15 +129,11 @@ export interface DashboardState {
   // UI state
   sidebarOpen: boolean;
   selectedSlideIndex: number | null;
-  generating: boolean;
   exporting: boolean;
   exportProgress: { current: number; total: number } | null;
-  error: string | null;
 }
 
 export type DashboardAction =
-  | { type: 'SET_API_KEY'; payload: string }
-  | { type: 'SET_APP_DESCRIPTION'; payload: string }
   | { type: 'SET_SCREENSHOTS'; payload: ScreenshotFile[] }
   | { type: 'ADD_SCREENSHOT'; payload: ScreenshotFile }
   | { type: 'REMOVE_SCREENSHOT'; payload: string }
@@ -166,10 +157,8 @@ export type DashboardAction =
   | { type: 'REMOVE_LOCALE'; payload: Locale }
   | { type: 'TOGGLE_SIDEBAR' }
   | { type: 'SELECT_SLIDE'; payload: number | null }
-  | { type: 'SET_GENERATING'; payload: boolean }
   | { type: 'SET_EXPORTING'; payload: boolean }
   | { type: 'SET_EXPORT_PROGRESS'; payload: { current: number; total: number } | null }
-  | { type: 'SET_ERROR'; payload: string | null }
-  | { type: 'SET_GENERATED_CONFIG'; payload: GeneratedConfig }
   | { type: 'ADD_SLIDE'; payload: SlideConfig }
-  | { type: 'REMOVE_SLIDE'; payload: string };
+  | { type: 'REMOVE_SLIDE'; payload: string }
+  | { type: 'UPDATE_SLIDE'; payload: { id: string; changes: Partial<SlideConfig> } };

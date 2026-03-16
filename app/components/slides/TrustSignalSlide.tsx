@@ -3,10 +3,11 @@
 import { SlideProps } from '../types';
 import SlideWrapper from './SlideWrapper';
 import Caption from '../typography/Caption';
+import DraggableCaption from './DraggableCaption';
 import GradientBlob from '../decorative/GradientBlob';
 
 export default function TrustSignalSlide(props: SlideProps) {
-  const { canvasW, canvasH, theme, copy, appIcon, stylePreset } = props;
+  const { canvasW, canvasH, theme, copy, appIcon, stylePreset, onTextChange, isEditable, onPositionChange, slideConfig } = props;
   const showDecorations = stylePreset !== 'flat';
 
   // Contrast slide — inverted colors
@@ -36,8 +37,13 @@ export default function TrustSignalSlide(props: SlideProps) {
       )}
 
       {/* Large centered headline */}
-      <div
-        style={{
+      <DraggableCaption
+        canvasW={canvasW}
+        canvasH={canvasH}
+        textPosition={slideConfig.textPosition}
+        onPositionChange={onPositionChange}
+        isEditable={isEditable}
+        defaultStyle={{
           position: 'absolute',
           top: '50%',
           left: '50%',
@@ -54,8 +60,10 @@ export default function TrustSignalSlide(props: SlideProps) {
           accentColor={theme.accent}
           align="center"
           isHero
+          onTextChange={onTextChange}
+          isEditable={isEditable}
         />
-      </div>
+      </DraggableCaption>
 
       {/* Small app icon at bottom */}
       {appIcon && (
