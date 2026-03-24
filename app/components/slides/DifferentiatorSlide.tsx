@@ -7,32 +7,72 @@ import IPad from '../mockups/IPad';
 import Caption from '../typography/Caption';
 import DraggableCaption from './DraggableCaption';
 import GlowOrb from '../decorative/GlowOrb';
+import GradientBlob from '../decorative/GradientBlob';
+import { STYLE_CONFIGS, hexOpacity, getDeviceShadow } from '../constants';
 
 export default function DifferentiatorSlide(props: SlideProps) {
   const { canvasW, canvasH, theme, copy, screenshots, device, slideConfig, isRtl, stylePreset, onTextChange, isEditable, onPositionChange } = props;
   const screenshotSrc = screenshots[slideConfig.screenshotIndex]?.dataUrl || screenshots[1]?.dataUrl || screenshots[0]?.dataUrl || null;
   const isIPad = device === 'ipad';
-  const showDecorations = stylePreset !== 'flat';
+  const sc = STYLE_CONFIGS[stylePreset];
+
+  // Glow position follows device side
+  const deviceSide = isRtl ? 'left' : 'right';
 
   return (
     <SlideWrapper {...props}>
-      {/* Subtle gradient background */}
+      {/* Background gradient */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: `linear-gradient(135deg, ${theme.bg} 0%, ${theme.bg}dd 70%, ${theme.accent}10 100%)`,
+          background: `linear-gradient(${sc.bgGradientAngle}deg, ${theme.bg} 0%, ${theme.bg}dd 70%, ${theme.accent}${hexOpacity(sc.gradientIntensity)} 100%)`,
         }}
       />
 
-      {showDecorations && (
+      {/* Accent overlay — radiates from device side */}
+      {sc.accentBgOpacity > 0 && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: `radial-gradient(ellipse at ${isRtl ? '20%' : '80%'} 70%, ${theme.accent}${hexOpacity(sc.accentBgOpacity)} 0%, transparent 55%)`,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+
+      {/* Primary decoration */}
+      {sc.showDecorations && (
         <GlowOrb
           color={theme.accent}
-          size={canvasW * 0.5}
+          size={canvasW * 0.5 * sc.decorationScale}
           top="30%"
           right={isRtl ? undefined : '-15%'}
           left={isRtl ? '-15%' : undefined}
-          opacity={0.12}
+          opacity={sc.decorationOpacity}
+        />
+      )}
+
+      {/* Extra blobs */}
+      {sc.extraBlobs >= 1 && (
+        <GradientBlob
+          color={theme.accent}
+          size={canvasW * 0.4 * sc.decorationScale}
+          top="5%"
+          left={isRtl ? undefined : '10%'}
+          right={isRtl ? '10%' : undefined}
+          opacity={sc.decorationOpacity * 0.5}
+          blur={sc.blur * 1.2}
+        />
+      )}
+      {sc.extraBlobs >= 2 && (
+        <GlowOrb
+          color={theme.accent}
+          size={canvasW * 0.3 * sc.decorationScale}
+          bottom="40%"
+          left="50%"
+          opacity={sc.decorationOpacity * 0.35}
         />
       )}
 
@@ -64,6 +104,23 @@ export default function DifferentiatorSlide(props: SlideProps) {
         />
       </DraggableCaption>
 
+      {/* Device glow */}
+      {sc.deviceGlow > 0 && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '10%',
+            [deviceSide]: '-5%',
+            width: '50%',
+            height: '35%',
+            background: `radial-gradient(ellipse, ${theme.accent}${hexOpacity(sc.deviceGlow)} 0%, transparent 70%)`,
+            filter: `blur(${Math.round(35 * sc.deviceGlow)}px)`,
+            zIndex: 0,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+
       {/* Phone offset to the right (or left for RTL) */}
       <div
         style={{
@@ -74,6 +131,7 @@ export default function DifferentiatorSlide(props: SlideProps) {
           width: isIPad ? '65%' : '78%',
           transform: `translateY(10%) rotate(${isRtl ? '-2' : '2'}deg)`,
           zIndex: 1,
+          filter: sc.deviceShadow > 0 ? `drop-shadow(${getDeviceShadow(theme.accent, sc)})` : undefined,
         }}
       >
         {isIPad ? (

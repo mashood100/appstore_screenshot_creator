@@ -9,6 +9,7 @@ import EcosystemSlide from '../slides/EcosystemSlide';
 import CoreFeatureSlide from '../slides/CoreFeatureSlide';
 import TrustSignalSlide from '../slides/TrustSignalSlide';
 import MoreFeaturesSlide from '../slides/MoreFeaturesSlide';
+import PanoramicSlide from '../slides/PanoramicSlide';
 
 function getSlideComponent(type: string) {
   switch (type) {
@@ -18,6 +19,7 @@ function getSlideComponent(type: string) {
     case 'core-feature': return CoreFeatureSlide;
     case 'trust-signal': return TrustSignalSlide;
     case 'more-features': return MoreFeaturesSlide;
+    case 'panoramic': return PanoramicSlide;
     default: return CoreFeatureSlide;
   }
 }
@@ -83,13 +85,16 @@ export default function SlideDesignPicker({ onSelect, onClose }: SlideDesignPick
         >
           {SLIDE_DESIGNS.map((design) => {
             const SlideComponent = getSlideComponent(design.type);
+            const isPanoramic = design.type === 'panoramic';
+
             const previewConfig: SlideConfig = {
               id: `preview-${design.type}`,
               type: design.type,
               categoryLabel: design.defaultCategoryLabel,
-              headline: design.defaultHeadline,
+              headline: isPanoramic ? 'Your App\nTagline Here' : design.defaultHeadline,
               screenshotIndex: 0,
               layout: design.defaultLayout,
+              ...(isPanoramic ? { pairPosition: 'left' as const } : {}),
             };
             const slideProps: SlideProps = {
               canvasW: IPHONE_W,
@@ -97,8 +102,8 @@ export default function SlideDesignPicker({ onSelect, onClose }: SlideDesignPick
               theme,
               copy: {
                 slideId: previewConfig.id,
-                categoryLabel: design.defaultCategoryLabel,
-                headline: design.defaultHeadline,
+                categoryLabel: previewConfig.categoryLabel,
+                headline: previewConfig.headline,
               },
               screenshots: state.screenshots,
               appIcon: state.appIcon,
@@ -110,11 +115,29 @@ export default function SlideDesignPicker({ onSelect, onClose }: SlideDesignPick
               slideConfig: previewConfig,
             };
 
+            // Panoramic right preview config
+            const rightConfig: SlideConfig | null = isPanoramic ? {
+              id: `preview-panoramic-right`,
+              type: 'panoramic',
+              categoryLabel: '',
+              headline: 'Another Great\nFeature',
+              screenshotIndex: 1,
+              layout: 'centered',
+              pairPosition: 'right',
+            } : null;
+            const rightProps: SlideProps | null = rightConfig ? {
+              ...slideProps,
+              copy: { slideId: rightConfig.id, categoryLabel: rightConfig.categoryLabel, headline: rightConfig.headline },
+              slideConfig: rightConfig,
+            } : null;
+
+            const panoPreviewScale = PREVIEW_SCALE * 0.48;
+
             return (
               <button
                 key={design.type}
                 onClick={() => onSelect(design.type)}
-                className="flex flex-col rounded-lg overflow-hidden text-left transition-all hover:shadow-lg group"
+                className={`flex flex-col rounded-lg overflow-hidden text-left transition-all hover:shadow-lg group ${isPanoramic ? 'sm:col-span-2' : ''}`}
                 style={{
                   border: '1px solid var(--card-border)',
                   background: 'var(--background)',
@@ -125,24 +148,65 @@ export default function SlideDesignPicker({ onSelect, onClose }: SlideDesignPick
                   className="overflow-hidden"
                   style={{
                     width: '100%',
-                    height: IPHONE_H * PREVIEW_SCALE,
+                    height: isPanoramic ? IPHONE_H * panoPreviewScale : IPHONE_H * PREVIEW_SCALE,
                     position: 'relative',
+                    display: isPanoramic ? 'flex' : undefined,
+                    gap: isPanoramic ? 2 : undefined,
                   }}
                 >
-                  <div
-                    style={{
-                      transform: `scale(${PREVIEW_SCALE})`,
-                      transformOrigin: 'top left',
-                      width: IPHONE_W,
-                      height: IPHONE_H,
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      pointerEvents: 'none',
-                    }}
-                  >
-                    <SlideComponent {...slideProps} />
-                  </div>
+                  {isPanoramic ? (
+                    <>
+                      {/* Left slide preview */}
+                      <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+                        <div
+                          style={{
+                            transform: `scale(${panoPreviewScale})`,
+                            transformOrigin: 'top left',
+                            width: IPHONE_W,
+                            height: IPHONE_H,
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            pointerEvents: 'none',
+                          }}
+                        >
+                          <SlideComponent {...slideProps} />
+                        </div>
+                      </div>
+                      {/* Right slide preview */}
+                      <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+                        <div
+                          style={{
+                            transform: `scale(${panoPreviewScale})`,
+                            transformOrigin: 'top left',
+                            width: IPHONE_W,
+                            height: IPHONE_H,
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            pointerEvents: 'none',
+                          }}
+                        >
+                          <SlideComponent {...rightProps!} />
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div
+                      style={{
+                        transform: `scale(${PREVIEW_SCALE})`,
+                        transformOrigin: 'top left',
+                        width: IPHONE_W,
+                        height: IPHONE_H,
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      <SlideComponent {...slideProps} />
+                    </div>
+                  )}
 
                   {/* Hover overlay */}
                   <div

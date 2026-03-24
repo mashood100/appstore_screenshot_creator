@@ -10,6 +10,7 @@ import EcosystemSlide from '../slides/EcosystemSlide';
 import CoreFeatureSlide from '../slides/CoreFeatureSlide';
 import TrustSignalSlide from '../slides/TrustSignalSlide';
 import MoreFeaturesSlide from '../slides/MoreFeaturesSlide';
+import PanoramicSlide from '../slides/PanoramicSlide';
 
 function getSlideComponent(type: string) {
   switch (type) {
@@ -19,6 +20,7 @@ function getSlideComponent(type: string) {
     case 'core-feature': return CoreFeatureSlide;
     case 'trust-signal': return TrustSignalSlide;
     case 'more-features': return MoreFeaturesSlide;
+    case 'panoramic': return PanoramicSlide;
     default: return CoreFeatureSlide;
   }
 }
@@ -32,9 +34,12 @@ const OffscreenRenderer = forwardRef<OffscreenRendererHandle>(function Offscreen
   const [state] = useDashboard();
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const canvasW = state.device === 'ipad' ? IPAD_W : IPHONE_W;
-  const canvasH = state.device === 'ipad' ? IPAD_H : IPHONE_H;
-  const theme = THEMES[state.themeId] || THEMES['clean-light'];
+  // Render at the exact export size so html-to-image captures correct dimensions
+  const canvasW = state.exportSize.w;
+  const canvasH = state.exportSize.h;
+  const theme = state.themeId === 'custom'
+    ? { bg: state.colors.background, fg: state.colors.text, accent: state.colors.accent, muted: '#6B7280' }
+    : THEMES[state.themeId] || THEMES['clean-light'];
   const isRtl = RTL_LOCALES.has(state.activeLocale);
 
   useImperativeHandle(ref, () => ({
@@ -73,6 +78,7 @@ const OffscreenRenderer = forwardRef<OffscreenRendererHandle>(function Offscreen
           uiElements: state.uiElements.map(e => e.dataUrl),
           stylePreset: state.stylePreset,
           slideConfig,
+          fontFamily: state.fontFamily,
         };
 
         return (

@@ -12,6 +12,7 @@ interface ScreenshotPreviewProps {
   onExport: () => void;
   onRemove: () => void;
   children: ReactNode;
+  className?: string;
 }
 
 export default function ScreenshotPreview({
@@ -24,6 +25,7 @@ export default function ScreenshotPreview({
   onExport,
   onRemove,
   children,
+  className,
 }: ScreenshotPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.15);
@@ -50,7 +52,7 @@ export default function ScreenshotPreview({
       onClick={onSelect}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative cursor-pointer rounded-lg overflow-hidden transition-all"
+      className={`relative cursor-pointer rounded-lg overflow-hidden transition-all ${className || ''}`}
       style={{
         border: isSelected ? '2px solid var(--accent)' : '2px solid var(--card-border)',
         background: 'var(--card-bg)',

@@ -5,26 +5,62 @@ import SlideWrapper from './SlideWrapper';
 import Caption from '../typography/Caption';
 import DraggableCaption from './DraggableCaption';
 import GradientBlob from '../decorative/GradientBlob';
+import GlowOrb from '../decorative/GlowOrb';
+import { STYLE_CONFIGS, hexOpacity } from '../constants';
 
 export default function MoreFeaturesSlide(props: SlideProps) {
   const { canvasW, canvasH, theme, copy, appIcon, features, stylePreset, onTextChange, isEditable, onPositionChange, slideConfig } = props;
-  const showDecorations = stylePreset !== 'flat';
+  const sc = STYLE_CONFIGS[stylePreset];
 
   // Dark background for contrast
-  const bgGradient = `linear-gradient(180deg, ${theme.fg}f0 0%, ${theme.fg}e5 100%)`;
+  const bgGradient = `linear-gradient(${sc.bgGradientAngle}deg, ${theme.fg}f0 0%, ${theme.fg}e5 100%)`;
   const pillBg = `${theme.bg}18`;
   const pillBorder = `${theme.bg}25`;
 
   return (
     <SlideWrapper {...props} backgroundOverride={bgGradient}>
-      {showDecorations && (
+      {/* Accent ambient overlay */}
+      {sc.accentBgOpacity > 0 && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: `radial-gradient(ellipse at 50% 60%, ${theme.accent}${hexOpacity(sc.accentBgOpacity * 0.6)} 0%, transparent 55%)`,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+
+      {/* Primary decoration */}
+      {sc.showDecorations && (
         <GradientBlob
           color={theme.accent}
-          size={canvasW * 0.6}
+          size={canvasW * 0.6 * sc.decorationScale}
           top="30%"
           left="20%"
-          opacity={0.08}
-          blur={100}
+          opacity={sc.decorationOpacity}
+          blur={sc.blur}
+        />
+      )}
+
+      {/* Extra blobs */}
+      {sc.extraBlobs >= 1 && (
+        <GlowOrb
+          color={theme.accent}
+          size={canvasW * 0.35 * sc.decorationScale}
+          bottom="10%"
+          right="10%"
+          opacity={sc.decorationOpacity * 0.5}
+        />
+      )}
+      {sc.extraBlobs >= 2 && (
+        <GradientBlob
+          color={theme.accent}
+          size={canvasW * 0.4 * sc.decorationScale}
+          top="5%"
+          right="-5%"
+          opacity={sc.decorationOpacity * 0.35}
+          blur={sc.blur * 1.2}
         />
       )}
 
@@ -41,6 +77,7 @@ export default function MoreFeaturesSlide(props: SlideProps) {
             borderRadius: canvasW * 0.022,
             overflow: 'hidden',
             zIndex: 2,
+            boxShadow: sc.deviceGlow > 0 ? `0 0 ${Math.round(30 * sc.deviceGlow)}px ${theme.accent}${hexOpacity(sc.deviceGlow * 0.4)}` : undefined,
           }}
         >
           <img

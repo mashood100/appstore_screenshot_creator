@@ -19,17 +19,23 @@ export const SC_H = (1990 / MK_H) * 100; // screen height %
 export const SC_RX = (126 / 918) * 100;  // border-radius x %
 export const SC_RY = (126 / 1990) * 100; // border-radius y %
 
-// Export sizes
+// Export sizes — exact App Store Connect dimensions (portrait)
+// 6.5" sizes first since they're the most common App Store requirement
 export const IPHONE_SIZES: ExportSize[] = [
-  { label: '6.9"', w: 1320, h: 2868 },
-  { label: '6.5"', w: 1284, h: 2778 },
-  { label: '6.3"', w: 1206, h: 2622 },
-  { label: '6.1"', w: 1125, h: 2436 },
+  { label: '6.5" (1284×2778)', w: 1284, h: 2778 },
+  { label: '6.5" (1242×2688)', w: 1242, h: 2688 },
+  { label: '6.9" iPhone 16 Pro Max', w: 1320, h: 2868 },
+  { label: '6.7" iPhone 15 Pro Max', w: 1290, h: 2796 },
+  { label: '6.1" iPhone 15/14 Pro', w: 1179, h: 2556 },
+  { label: '5.8" iPhone X/XS', w: 1125, h: 2436 },
+  { label: '5.5" iPhone 8 Plus', w: 1242, h: 2208 },
 ];
 
 export const IPAD_SIZES: ExportSize[] = [
-  { label: '13" iPad', w: 2064, h: 2752 },
+  { label: '13" iPad Pro M4', w: 2064, h: 2752 },
   { label: '12.9" iPad Pro', w: 2048, h: 2732 },
+  { label: '11" iPad Pro', w: 1668, h: 2388 },
+  { label: '10.5" iPad', w: 1668, h: 2224 },
 ];
 
 // Theme presets
@@ -59,6 +65,76 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     muted: '#6B7280',
   },
 };
+
+// Style decoration configs — controls visual treatment per preset
+export interface StyleConfig {
+  // Decorations
+  showDecorations: boolean;
+  decorationOpacity: number;
+  decorationScale: number;
+  blur: number;
+  extraBlobs: number;          // additional decoration layers (0, 1, or 2)
+  // Background
+  gradientIntensity: number;
+  bgGradientAngle: number;     // gradient direction in degrees
+  accentBgOpacity: number;     // accent color bleed into background (0-0.25)
+  // Device effects
+  deviceGlow: number;          // accent glow behind device (0 = none, 0.3 = strong)
+  deviceShadow: number;        // drop shadow strength (0 = none, 0.4 = deep)
+}
+
+export const STYLE_CONFIGS: Record<StylePreset, StyleConfig> = {
+  'clean-minimal': {
+    showDecorations: true,
+    decorationOpacity: 0.04, decorationScale: 0.7, blur: 160, extraBlobs: 0,
+    gradientIntensity: 0.02, bgGradientAngle: 180, accentBgOpacity: 0.02,
+    deviceGlow: 0, deviceShadow: 0.08,
+  },
+  'dark-moody': {
+    showDecorations: true,
+    decorationOpacity: 0.25, decorationScale: 1.3, blur: 60, extraBlobs: 2,
+    gradientIntensity: 0.18, bgGradientAngle: 160, accentBgOpacity: 0.12,
+    deviceGlow: 0.35, deviceShadow: 0.4,
+  },
+  'warm-organic': {
+    showDecorations: true,
+    decorationOpacity: 0.15, decorationScale: 1.1, blur: 100, extraBlobs: 1,
+    gradientIntensity: 0.08, bgGradientAngle: 135, accentBgOpacity: 0.06,
+    deviceGlow: 0.12, deviceShadow: 0.12,
+  },
+  'bold-colorful': {
+    showDecorations: true,
+    decorationOpacity: 0.22, decorationScale: 1.4, blur: 40, extraBlobs: 1,
+    gradientIntensity: 0.14, bgGradientAngle: 135, accentBgOpacity: 0.15,
+    deviceGlow: 0.22, deviceShadow: 0.25,
+  },
+  'gradient-heavy': {
+    showDecorations: true,
+    decorationOpacity: 0.30, decorationScale: 1.6, blur: 70, extraBlobs: 2,
+    gradientIntensity: 0.22, bgGradientAngle: 150, accentBgOpacity: 0.20,
+    deviceGlow: 0.28, deviceShadow: 0.35,
+  },
+  'flat': {
+    showDecorations: false,
+    decorationOpacity: 0, decorationScale: 0, blur: 0, extraBlobs: 0,
+    gradientIntensity: 0, bgGradientAngle: 180, accentBgOpacity: 0,
+    deviceGlow: 0, deviceShadow: 0,
+  },
+};
+
+// Helper: hex opacity from 0-1 float
+export function hexOpacity(value: number): string {
+  return Math.round(Math.max(0, Math.min(1, value)) * 255).toString(16).padStart(2, '0');
+}
+
+// Helper: build device glow + shadow CSS
+export function getDeviceShadow(accentColor: string, sc: StyleConfig): string {
+  const parts: string[] = [];
+  if (sc.deviceShadow > 0) {
+    parts.push(`0 ${Math.round(20 * sc.deviceShadow)}px ${Math.round(60 * sc.deviceShadow)}px rgba(0,0,0,${sc.deviceShadow})`);
+  }
+  return parts.length > 0 ? parts.join(', ') : 'none';
+}
 
 // Style presets
 export const STYLE_PRESETS: { id: StylePreset; label: string; description: string }[] = [
@@ -178,5 +254,13 @@ export const SLIDE_DESIGNS: {
     defaultCategoryLabel: '',
     defaultHeadline: 'And So Much More',
     defaultLayout: 'no-phone',
+  },
+  {
+    type: 'panoramic',
+    label: 'Panoramic Pair',
+    description: 'Two connected screenshots that flow together. Adds 2 slides at once.',
+    defaultCategoryLabel: '',
+    defaultHeadline: 'Your App Tagline',
+    defaultLayout: 'centered',
   },
 ];

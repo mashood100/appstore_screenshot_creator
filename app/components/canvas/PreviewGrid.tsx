@@ -12,6 +12,7 @@ import EcosystemSlide from '../slides/EcosystemSlide';
 import CoreFeatureSlide from '../slides/CoreFeatureSlide';
 import TrustSignalSlide from '../slides/TrustSignalSlide';
 import MoreFeaturesSlide from '../slides/MoreFeaturesSlide';
+import PanoramicSlide from '../slides/PanoramicSlide';
 
 function getSlideComponent(type: string) {
   switch (type) {
@@ -21,11 +22,12 @@ function getSlideComponent(type: string) {
     case 'core-feature': return CoreFeatureSlide;
     case 'trust-signal': return TrustSignalSlide;
     case 'more-features': return MoreFeaturesSlide;
+    case 'panoramic': return PanoramicSlide;
     default: return CoreFeatureSlide;
   }
 }
 
-function getSlideLabel(type: string) {
+function getSlideLabel(type: string, pairPosition?: 'left' | 'right') {
   switch (type) {
     case 'hero': return 'Hero';
     case 'differentiator': return 'Differentiator';
@@ -33,6 +35,7 @@ function getSlideLabel(type: string) {
     case 'core-feature': return 'Feature';
     case 'trust-signal': return 'Trust Signal';
     case 'more-features': return 'More Features';
+    case 'panoramic': return pairPosition === 'right' ? 'Panoramic R' : 'Panoramic L';
     default: return 'Slide';
   }
 }
@@ -47,7 +50,9 @@ export default function PreviewGrid({ onExportSlide }: PreviewGridProps) {
 
   const canvasW = state.device === 'ipad' ? IPAD_W : IPHONE_W;
   const canvasH = state.device === 'ipad' ? IPAD_H : IPHONE_H;
-  const theme = THEMES[state.themeId] || THEMES['clean-light'];
+  const theme = state.themeId === 'custom'
+    ? { bg: state.colors.background, fg: state.colors.text, accent: state.colors.accent, muted: '#6B7280' }
+    : THEMES[state.themeId] || THEMES['clean-light'];
   const isRtl = RTL_LOCALES.has(state.activeLocale);
 
   const canAddMore = state.slides.length < MAX_SLIDES;
@@ -55,6 +60,33 @@ export default function PreviewGrid({ onExportSlide }: PreviewGridProps) {
   const handleAddSlide = (type: SlideType) => {
     const design = SLIDE_DESIGNS.find(d => d.type === type);
     if (!design) return;
+
+    if (type === 'panoramic') {
+      if (state.slides.length + 2 > MAX_SLIDES) return; // needs 2 slots
+      // Panoramic adds a connected pair (2 slides)
+      const leftSlide: SlideConfig = {
+        id: `slide-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        type: 'panoramic',
+        categoryLabel: '',
+        headline: 'Your App\nTagline Here',
+        screenshotIndex: state.slides.length,
+        layout: 'centered',
+        pairPosition: 'left',
+      };
+      const rightSlide: SlideConfig = {
+        id: `slide-${Date.now() + 1}-${Math.random().toString(36).substring(2, 7)}`,
+        type: 'panoramic',
+        categoryLabel: '',
+        headline: 'Another Great\nFeature',
+        screenshotIndex: state.slides.length + 1,
+        layout: 'centered',
+        pairPosition: 'right',
+      };
+      dispatch({ type: 'ADD_SLIDE', payload: leftSlide });
+      dispatch({ type: 'ADD_SLIDE', payload: rightSlide });
+      setShowPicker(false);
+      return;
+    }
 
     const newSlide: SlideConfig = {
       id: `slide-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
@@ -96,6 +128,7 @@ export default function PreviewGrid({ onExportSlide }: PreviewGridProps) {
             uiElements: state.uiElements.map(e => e.dataUrl),
             stylePreset: state.stylePreset,
             slideConfig,
+            fontFamily: state.fontFamily,
             isEditable: true,
             onTextChange: (field, value) => {
               dispatch({
@@ -117,11 +150,12 @@ export default function PreviewGrid({ onExportSlide }: PreviewGridProps) {
               canvasW={canvasW}
               canvasH={canvasH}
               index={index}
-              slideLabel={getSlideLabel(slideConfig.type)}
+              slideLabel={getSlideLabel(slideConfig.type, slideConfig.pairPosition)}
               isSelected={state.selectedSlideIndex === index}
               onSelect={() => dispatch({ type: 'SELECT_SLIDE', payload: index })}
               onExport={() => onExportSlide(index)}
               onRemove={() => handleRemoveSlide(slideConfig.id)}
+              className=""
             >
               <SlideComponent {...slideProps} />
             </ScreenshotPreview>

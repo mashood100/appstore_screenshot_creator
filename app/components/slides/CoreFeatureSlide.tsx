@@ -7,12 +7,14 @@ import IPad from '../mockups/IPad';
 import Caption from '../typography/Caption';
 import DraggableCaption from './DraggableCaption';
 import GlowOrb from '../decorative/GlowOrb';
+import GradientBlob from '../decorative/GradientBlob';
+import { STYLE_CONFIGS, hexOpacity, getDeviceShadow } from '../constants';
 
 export default function CoreFeatureSlide(props: SlideProps) {
   const { canvasW, canvasH, theme, copy, screenshots, device, slideConfig, isRtl, stylePreset, onTextChange, isEditable, onPositionChange } = props;
   const screenshotSrc = screenshots[slideConfig.screenshotIndex]?.dataUrl || screenshots[0]?.dataUrl || null;
   const isIPad = device === 'ipad';
-  const showDecorations = stylePreset !== 'flat';
+  const sc = STYLE_CONFIGS[stylePreset];
 
   const layout = slideConfig.layout || 'centered';
 
@@ -24,19 +26,56 @@ export default function CoreFeatureSlide(props: SlideProps) {
   const slideIndex = parseInt(slideConfig.id.replace('slide-', ''), 10) || 0;
   const isContrastSlide = slideIndex % 3 === 0;
   const bgColor = isContrastSlide
-    ? `linear-gradient(180deg, ${theme.fg}f0 0%, ${theme.fg}e0 100%)`
-    : `linear-gradient(180deg, ${theme.bg} 0%, ${theme.bg}ee 100%)`;
+    ? `linear-gradient(${sc.bgGradientAngle}deg, ${theme.fg}f0 0%, ${theme.fg}e0 100%)`
+    : `linear-gradient(${sc.bgGradientAngle}deg, ${theme.bg} 0%, ${theme.bg}ee 100%)`;
   const textColor = isContrastSlide ? theme.bg : theme.fg;
+
+  // Glow position follows the device position
+  const glowLeft = isCentered ? '50%' : isOffsetRight ? '70%' : '30%';
 
   return (
     <SlideWrapper {...props} backgroundOverride={bgColor}>
-      {showDecorations && (
+      {/* Accent overlay */}
+      {sc.accentBgOpacity > 0 && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: `radial-gradient(ellipse at ${glowLeft} 80%, ${theme.accent}${hexOpacity(sc.accentBgOpacity)} 0%, transparent 60%)`,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+
+      {/* Primary decoration */}
+      {sc.showDecorations && (
         <GlowOrb
           color={theme.accent}
-          size={canvasW * 0.4}
+          size={canvasW * 0.4 * sc.decorationScale}
           top="20%"
           left={isCentered ? '30%' : isOffsetRight ? '5%' : '55%'}
-          opacity={0.12}
+          opacity={sc.decorationOpacity}
+        />
+      )}
+
+      {/* Extra blobs */}
+      {sc.extraBlobs >= 1 && (
+        <GradientBlob
+          color={theme.accent}
+          size={canvasW * 0.35 * sc.decorationScale}
+          bottom="15%"
+          right={isCentered ? '10%' : isOffsetRight ? '30%' : '-5%'}
+          opacity={sc.decorationOpacity * 0.5}
+          blur={sc.blur}
+        />
+      )}
+      {sc.extraBlobs >= 2 && (
+        <GlowOrb
+          color={theme.accent}
+          size={canvasW * 0.25 * sc.decorationScale}
+          top="5%"
+          right="15%"
+          opacity={sc.decorationOpacity * 0.4}
         />
       )}
 
@@ -69,6 +108,24 @@ export default function CoreFeatureSlide(props: SlideProps) {
         />
       </DraggableCaption>
 
+      {/* Device glow */}
+      {sc.deviceGlow > 0 && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '5%',
+            left: glowLeft,
+            transform: 'translateX(-50%)',
+            width: '50%',
+            height: '30%',
+            background: `radial-gradient(ellipse, ${theme.accent}${hexOpacity(sc.deviceGlow)} 0%, transparent 70%)`,
+            filter: `blur(${Math.round(35 * sc.deviceGlow)}px)`,
+            zIndex: 0,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+
       {/* Phone */}
       <div
         style={{
@@ -83,6 +140,7 @@ export default function CoreFeatureSlide(props: SlideProps) {
             ? isCentered ? '65%' : '60%'
             : isCentered ? '84%' : '75%',
           zIndex: 1,
+          filter: sc.deviceShadow > 0 ? `drop-shadow(${getDeviceShadow(theme.accent, sc)})` : undefined,
         }}
       >
         {isIPad ? (

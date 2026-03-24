@@ -7,44 +7,79 @@ import IPad from '../mockups/IPad';
 import Caption from '../typography/Caption';
 import DraggableCaption from './DraggableCaption';
 import GradientBlob from '../decorative/GradientBlob';
+import GlowOrb from '../decorative/GlowOrb';
+import { STYLE_CONFIGS, hexOpacity, getDeviceShadow } from '../constants';
 
 export default function HeroSlide(props: SlideProps) {
   const { canvasW, canvasH, theme, copy, screenshots, appIcon, device, slideConfig, stylePreset, onTextChange, isEditable, onPositionChange } = props;
   const screenshotSrc = screenshots[slideConfig.screenshotIndex]?.dataUrl || screenshots[0]?.dataUrl || null;
   const isDevice = device === 'ipad';
-  const showDecorations = stylePreset !== 'flat';
+  const sc = STYLE_CONFIGS[stylePreset];
 
   return (
     <SlideWrapper {...props}>
-      {/* Background gradient */}
+      {/* Base background gradient */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: `linear-gradient(180deg, ${theme.bg} 0%, ${theme.bg}ee 60%, ${theme.accent}15 100%)`,
+          background: `linear-gradient(${sc.bgGradientAngle}deg, ${theme.bg} 0%, ${theme.bg}ee 60%, ${theme.accent}${hexOpacity(sc.gradientIntensity)} 100%)`,
         }}
       />
 
-      {/* Decorative blobs */}
-      {showDecorations && (
+      {/* Accent overlay — adds accent color bleed into the background */}
+      {sc.accentBgOpacity > 0 && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: `radial-gradient(ellipse at 50% 100%, ${theme.accent}${hexOpacity(sc.accentBgOpacity)} 0%, transparent 65%)`,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+
+      {/* Primary decorative blobs */}
+      {sc.showDecorations && (
         <>
           <GradientBlob
             color={theme.accent}
-            size={canvasW * 0.6}
+            size={canvasW * 0.6 * sc.decorationScale}
             top="-10%"
             right="-20%"
-            opacity={0.15}
-            blur={100}
+            opacity={sc.decorationOpacity}
+            blur={sc.blur}
           />
           <GradientBlob
             color={theme.accent}
-            size={canvasW * 0.4}
+            size={canvasW * 0.4 * sc.decorationScale}
             bottom="10%"
             left="-15%"
-            opacity={0.1}
-            blur={80}
+            opacity={sc.decorationOpacity * 0.7}
+            blur={sc.blur}
           />
         </>
+      )}
+
+      {/* Extra blobs for richer styles (dark-moody, gradient-heavy) */}
+      {sc.extraBlobs >= 1 && (
+        <GlowOrb
+          color={theme.accent}
+          size={canvasW * 0.35 * sc.decorationScale}
+          bottom="25%"
+          right="5%"
+          opacity={sc.decorationOpacity * 0.6}
+        />
+      )}
+      {sc.extraBlobs >= 2 && (
+        <GradientBlob
+          color={theme.accent}
+          size={canvasW * 0.5 * sc.decorationScale}
+          top="30%"
+          left="50%"
+          opacity={sc.decorationOpacity * 0.4}
+          blur={sc.blur * 1.2}
+        />
       )}
 
       {/* App icon */}
@@ -59,7 +94,7 @@ export default function HeroSlide(props: SlideProps) {
             height: canvasW * 0.12,
             borderRadius: canvasW * 0.027,
             overflow: 'hidden',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+            boxShadow: `0 8px 24px rgba(0,0,0,0.15)${sc.deviceGlow > 0 ? `, 0 0 ${Math.round(40 * sc.deviceGlow)}px ${theme.accent}${hexOpacity(sc.deviceGlow * 0.5)}` : ''}`,
             zIndex: 2,
           }}
         >
@@ -100,6 +135,24 @@ export default function HeroSlide(props: SlideProps) {
         />
       </DraggableCaption>
 
+      {/* Device glow behind mockup */}
+      {sc.deviceGlow > 0 && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '8%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '55%',
+            height: '35%',
+            background: `radial-gradient(ellipse, ${theme.accent}${hexOpacity(sc.deviceGlow)} 0%, transparent 70%)`,
+            filter: `blur(${Math.round(40 * sc.deviceGlow)}px)`,
+            zIndex: 0,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+
       {/* Device mockup at bottom */}
       <div
         style={{
@@ -109,6 +162,7 @@ export default function HeroSlide(props: SlideProps) {
           transform: `translateX(-50%) translateY(${isDevice ? '8%' : '13%'})`,
           width: isDevice ? '70%' : '84%',
           zIndex: 1,
+          filter: sc.deviceShadow > 0 ? `drop-shadow(${getDeviceShadow(theme.accent, sc)})` : undefined,
         }}
       >
         {isDevice ? (

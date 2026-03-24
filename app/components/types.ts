@@ -53,7 +53,8 @@ export type SlideType =
   | 'ecosystem'
   | 'core-feature'
   | 'trust-signal'
-  | 'more-features';
+  | 'more-features'
+  | 'panoramic';
 
 export type SlideLayout =
   | 'centered'
@@ -75,6 +76,7 @@ export interface SlideConfig {
   screenshotIndex: number;
   layout: SlideLayout;
   textPosition?: TextPosition;
+  pairPosition?: 'left' | 'right';
 }
 
 export interface SlideCopy {
@@ -96,6 +98,7 @@ export interface SlideProps {
   uiElements: string[];
   stylePreset: StylePreset;
   slideConfig: SlideConfig;
+  fontFamily?: string;
   onTextChange?: (field: 'headline' | 'categoryLabel', value: string) => void;
   onPositionChange?: (position: TextPosition) => void;
   isEditable?: boolean;
