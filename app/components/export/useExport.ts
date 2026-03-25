@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 import { toPng } from 'html-to-image';
 import { useDashboard } from '../context/DashboardContext';
 import { OffscreenRendererHandle } from '../canvas/OffscreenRenderer';
+import { logScreenshotExported, logExportAllStarted, logExportAllCompleted } from '../../lib/analytics';
 
 function downloadDataUrl(dataUrl: string, filename: string) {
   const link = document.createElement('a');
@@ -53,6 +54,14 @@ export function useExport(rendererRef: React.RefObject<OffscreenRendererHandle |
       await toPng(el, opts);
       const dataUrl = await toPng(el, opts);
       downloadDataUrl(dataUrl, getFilename(index));
+
+      logScreenshotExported({
+        slide_type: state.slides[index]?.type || 'unknown',
+        device: state.device,
+        theme: state.themeId,
+        export_dimensions: `${W}x${H}`,
+        locale: state.activeLocale,
+      });
     } finally {
       // Move back off-screen
       if (parent) {
@@ -71,6 +80,7 @@ export function useExport(rendererRef: React.RefObject<OffscreenRendererHandle |
 
     const count = renderer.getSlideCount();
     dispatch({ type: 'SET_EXPORTING', payload: true });
+    logExportAllStarted({ slide_count: count });
 
     try {
       for (let i = 0; i < count; i++) {
@@ -78,6 +88,7 @@ export function useExport(rendererRef: React.RefObject<OffscreenRendererHandle |
         await exportSlide(i);
         if (i < count - 1) await delay(300);
       }
+      logExportAllCompleted({ slide_count: count });
     } finally {
       dispatch({ type: 'SET_EXPORTING', payload: false });
       dispatch({ type: 'SET_EXPORT_PROGRESS', payload: null });
