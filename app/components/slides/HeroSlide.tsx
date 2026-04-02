@@ -1,6 +1,6 @@
 'use client';
 
-import { SlideProps } from '../types';
+import { SlideProps, resolveScreenshot } from '../types';
 import SlideWrapper from './SlideWrapper';
 import Phone from '../mockups/Phone';
 import IPad from '../mockups/IPad';
@@ -12,7 +12,7 @@ import { STYLE_CONFIGS, hexOpacity, getDeviceShadow } from '../constants';
 
 export default function HeroSlide(props: SlideProps) {
   const { canvasW, canvasH, theme, copy, screenshots, appIcon, device, slideConfig, stylePreset, onTextChange, isEditable, onPositionChange } = props;
-  const screenshotSrc = screenshots[slideConfig.screenshotIndex]?.dataUrl || screenshots[0]?.dataUrl || null;
+  const screenshotSrc = resolveScreenshot(screenshots, slideConfig.screenshotId);
   const isDevice = device === 'ipad';
   const sc = STYLE_CONFIGS[stylePreset];
 

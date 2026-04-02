@@ -73,10 +73,19 @@ export interface SlideConfig {
   type: SlideType;
   categoryLabel: string;
   headline: string;
-  screenshotIndex: number;
+  screenshotId: string | null;
+  secondaryScreenshotId?: string | null;
   layout: SlideLayout;
   textPosition?: TextPosition;
   pairPosition?: 'left' | 'right';
+}
+
+export function resolveScreenshot(
+  screenshots: ScreenshotFile[],
+  screenshotId: string | null | undefined,
+): string | null {
+  if (!screenshotId) return null;
+  return screenshots.find(s => s.id === screenshotId)?.dataUrl ?? null;
 }
 
 export interface SlideCopy {
@@ -164,4 +173,5 @@ export type DashboardAction =
   | { type: 'SET_EXPORT_PROGRESS'; payload: { current: number; total: number } | null }
   | { type: 'ADD_SLIDE'; payload: SlideConfig }
   | { type: 'REMOVE_SLIDE'; payload: string }
-  | { type: 'UPDATE_SLIDE'; payload: { id: string; changes: Partial<SlideConfig> } };
+  | { type: 'UPDATE_SLIDE'; payload: { id: string; changes: Partial<SlideConfig> } }
+  | { type: 'ASSIGN_SCREENSHOT'; payload: { slideId: string; screenshotId: string | null; secondary?: boolean } };

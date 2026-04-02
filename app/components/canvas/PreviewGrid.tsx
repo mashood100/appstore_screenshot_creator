@@ -69,7 +69,7 @@ export default function PreviewGrid({ onExportSlide }: PreviewGridProps) {
         type: 'panoramic',
         categoryLabel: '',
         headline: 'Your App\nTagline Here',
-        screenshotIndex: state.slides.length,
+        screenshotId: null,
         layout: 'centered',
         pairPosition: 'left',
       };
@@ -78,7 +78,7 @@ export default function PreviewGrid({ onExportSlide }: PreviewGridProps) {
         type: 'panoramic',
         categoryLabel: '',
         headline: 'Another Great\nFeature',
-        screenshotIndex: state.slides.length + 1,
+        screenshotId: null,
         layout: 'centered',
         pairPosition: 'right',
       };
@@ -93,7 +93,7 @@ export default function PreviewGrid({ onExportSlide }: PreviewGridProps) {
       type: design.type,
       categoryLabel: design.defaultCategoryLabel,
       headline: design.defaultHeadline,
-      screenshotIndex: state.slides.length,
+      screenshotId: null,
       layout: design.defaultLayout,
     };
 
@@ -103,6 +103,10 @@ export default function PreviewGrid({ onExportSlide }: PreviewGridProps) {
 
   const handleRemoveSlide = (slideId: string) => {
     dispatch({ type: 'REMOVE_SLIDE', payload: slideId });
+  };
+
+  const handleAssignScreenshot = (slideId: string, screenshotId: string | null, secondary?: boolean) => {
+    dispatch({ type: 'ASSIGN_SCREENSHOT', payload: { slideId, screenshotId, secondary } });
   };
 
   return (
@@ -156,6 +160,12 @@ export default function PreviewGrid({ onExportSlide }: PreviewGridProps) {
               onExport={() => onExportSlide(index)}
               onRemove={() => handleRemoveSlide(slideConfig.id)}
               className=""
+              slideId={slideConfig.id}
+              screenshotId={slideConfig.screenshotId}
+              screenshots={state.screenshots}
+              onAssignScreenshot={handleAssignScreenshot}
+              hasSecondaryScreenshot={slideConfig.type === 'ecosystem'}
+              secondaryScreenshotId={slideConfig.secondaryScreenshotId}
             >
               <SlideComponent {...slideProps} />
             </ScreenshotPreview>

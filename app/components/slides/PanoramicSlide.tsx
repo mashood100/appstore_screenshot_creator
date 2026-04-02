@@ -1,6 +1,6 @@
 'use client';
 
-import { SlideProps } from '../types';
+import { SlideProps, resolveScreenshot } from '../types';
 import SlideWrapper from './SlideWrapper';
 import Phone from '../mockups/Phone';
 import IPad from '../mockups/IPad';
@@ -33,9 +33,7 @@ export default function PanoramicSlide(props: SlideProps) {
   const phoneContinuationLeft = -(phoneW - phoneOverhang);
 
   // Each side uses its own screenshot
-  const screenshotSrc = screenshots[slideConfig.screenshotIndex]?.dataUrl
-    || screenshots[0]?.dataUrl
-    || null;
+  const screenshotSrc = resolveScreenshot(screenshots, slideConfig.screenshotId);
 
   if (isLeft) {
     return (
@@ -167,10 +165,7 @@ export default function PanoramicSlide(props: SlideProps) {
 
   // ─── RIGHT SLIDE ───────────────────────────────────────────
 
-  const screenshotSrc2 = screenshots[slideConfig.screenshotIndex]?.dataUrl
-    || screenshots[1]?.dataUrl
-    || screenshots[0]?.dataUrl
-    || null;
+  const screenshotSrc2 = resolveScreenshot(screenshots, slideConfig.screenshotId);
 
   return (
     <SlideWrapper {...props}>

@@ -35,8 +35,18 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
       return { ...state, screenshots: action.payload };
     case 'ADD_SCREENSHOT':
       return { ...state, screenshots: [...state.screenshots, action.payload] };
-    case 'REMOVE_SCREENSHOT':
-      return { ...state, screenshots: state.screenshots.filter(s => s.id !== action.payload) };
+    case 'REMOVE_SCREENSHOT': {
+      const removedId = action.payload;
+      return {
+        ...state,
+        screenshots: state.screenshots.filter(s => s.id !== removedId),
+        slides: state.slides.map(s => ({
+          ...s,
+          screenshotId: s.screenshotId === removedId ? null : s.screenshotId,
+          secondaryScreenshotId: s.secondaryScreenshotId === removedId ? null : s.secondaryScreenshotId,
+        })),
+      };
+    }
     case 'SET_APP_ICON':
       return { ...state, appIcon: action.payload };
     case 'SET_UI_ELEMENTS':
@@ -118,6 +128,17 @@ function dashboardReducer(state: DashboardState, action: DashboardAction): Dashb
     case 'UPDATE_SLIDE': {
       const { id, changes } = action.payload;
       return { ...state, slides: state.slides.map(s => s.id === id ? { ...s, ...changes } : s) };
+    }
+    case 'ASSIGN_SCREENSHOT': {
+      const { slideId, screenshotId, secondary } = action.payload;
+      return {
+        ...state,
+        slides: state.slides.map(s => {
+          if (s.id !== slideId) return s;
+          if (secondary) return { ...s, secondaryScreenshotId: screenshotId };
+          return { ...s, screenshotId };
+        }),
+      };
     }
     default:
       return state;

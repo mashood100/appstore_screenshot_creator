@@ -34,6 +34,8 @@ export default function ScreenshotUploader() {
   }, [dispatch]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
+    // Only handle file drops, not our custom screenshot-id drags
+    if (!e.dataTransfer.types.includes('Files')) return;
     e.preventDefault();
     if (e.dataTransfer.files.length > 0) {
       handleFiles(e.dataTransfer.files);
@@ -49,7 +51,12 @@ export default function ScreenshotUploader() {
       {/* Drop zone */}
       <div
         onDrop={handleDrop}
-        onDragOver={(e) => e.preventDefault()}
+        onDragOver={(e) => {
+          // Only accept file drags, not our custom screenshot-id drags
+          if (e.dataTransfer.types.includes('Files')) {
+            e.preventDefault();
+          }
+        }}
         onClick={() => inputRef.current?.click()}
         className="rounded-md cursor-pointer transition-colors text-center py-6 px-3"
         style={{
@@ -77,8 +84,13 @@ export default function ScreenshotUploader() {
           {state.screenshots.map((screenshot, index) => (
             <div
               key={screenshot.id}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData('application/screenshot-id', screenshot.id);
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
               className="flex items-center gap-2 rounded-md px-2 py-1.5"
-              style={{ background: 'rgba(255,255,255,0.05)' }}
+              style={{ background: 'rgba(255,255,255,0.05)', cursor: 'grab' }}
             >
               <img
                 src={screenshot.dataUrl}

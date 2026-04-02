@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useEffect, useState, ReactNode } from 'react';
+import { ScreenshotFile } from '../types';
+import ScreenshotAssigner from './ScreenshotAssigner';
 
 interface ScreenshotPreviewProps {
   canvasW: number;
@@ -13,6 +15,12 @@ interface ScreenshotPreviewProps {
   onRemove: () => void;
   children: ReactNode;
   className?: string;
+  slideId: string;
+  screenshotId: string | null;
+  screenshots: ScreenshotFile[];
+  onAssignScreenshot: (slideId: string, screenshotId: string | null, secondary?: boolean) => void;
+  hasSecondaryScreenshot?: boolean;
+  secondaryScreenshotId?: string | null;
 }
 
 export default function ScreenshotPreview({
@@ -26,10 +34,18 @@ export default function ScreenshotPreview({
   onRemove,
   children,
   className,
+  slideId,
+  screenshotId,
+  screenshots,
+  onAssignScreenshot,
+  hasSecondaryScreenshot,
+  secondaryScreenshotId,
 }: ScreenshotPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.15);
   const [isHovered, setIsHovered] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [showAssigner, setShowAssigner] = useState<false | 'primary' | 'secondary'>(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -46,17 +62,47 @@ export default function ScreenshotPreview({
     return () => observer.disconnect();
   }, [canvasW]);
 
+  const handleDragOver = (e: React.DragEvent) => {
+    if (e.dataTransfer.types.includes('application/screenshot-id')) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      setIsDragOver(true);
+    }
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const droppedId = e.dataTransfer.getData('application/screenshot-id');
+    if (droppedId) {
+      onAssignScreenshot(slideId, droppedId);
+    }
+  };
+
   return (
     <div
       ref={containerRef}
       onClick={onSelect}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative cursor-pointer rounded-lg overflow-hidden transition-all ${className || ''}`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className={`relative cursor-pointer rounded-lg transition-all ${className || ''}`}
       style={{
-        border: isSelected ? '2px solid var(--accent)' : '2px solid var(--card-border)',
-        background: 'var(--card-bg)',
-        boxShadow: isSelected
+        border: isDragOver
+          ? '2px solid var(--accent)'
+          : isSelected
+          ? '2px solid var(--accent)'
+          : '2px solid var(--card-border)',
+        background: isDragOver ? 'rgba(59,130,246,0.05)' : 'var(--card-bg)',
+        boxShadow: isDragOver
+          ? '0 0 0 3px rgba(59,130,246,0.2)'
+          : isSelected
           ? '0 0 0 2px rgba(59,130,246,0.3)'
           : isHovered
           ? '0 4px 12px rgba(0,0,0,0.1)'
@@ -84,6 +130,7 @@ export default function ScreenshotPreview({
 
       {/* Scaled preview */}
       <div
+        className="rounded-t-lg"
         style={{
           width: '100%',
           height: canvasH * scale,
@@ -106,17 +153,71 @@ export default function ScreenshotPreview({
         </div>
       </div>
 
-      {/* Slide label overlay */}
+      {/* Slide label + controls */}
       <div
-        className="flex items-center justify-between px-3 py-2"
+        className="flex items-center gap-1.5 px-3 py-2"
         style={{
           background: 'var(--card-bg)',
           borderTop: '1px solid var(--card-border)',
+          borderRadius: '0 0 8px 8px',
+          position: 'relative',
         }}
       >
-        <span className="text-xs font-medium" style={{ color: 'var(--muted)' }}>
+        <span className="text-xs font-medium flex-1 truncate" style={{ color: 'var(--muted)' }}>
           {String(index + 1).padStart(2, '0')} — {slideLabel}
         </span>
+
+        {/* Screenshot assign button(s) */}
+        {hasSecondaryScreenshot ? (
+          <>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowAssigner(showAssigner === 'primary' ? false : 'primary');
+              }}
+              className="text-xs px-2 py-0.5 rounded transition-colors hover:bg-white/10 font-medium"
+              style={{
+                background: screenshotId ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.08)',
+                color: screenshotId ? 'var(--accent)' : 'var(--muted)',
+                border: showAssigner === 'primary' ? '1px solid var(--accent)' : '1px solid transparent',
+              }}
+              title="Assign front screenshot"
+            >
+              {screenshotId ? 'Front ✓' : 'Front'}
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowAssigner(showAssigner === 'secondary' ? false : 'secondary');
+              }}
+              className="text-xs px-2 py-0.5 rounded transition-colors hover:bg-white/10 font-medium"
+              style={{
+                background: secondaryScreenshotId ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.08)',
+                color: secondaryScreenshotId ? 'var(--accent)' : 'var(--muted)',
+                border: showAssigner === 'secondary' ? '1px solid var(--accent)' : '1px solid transparent',
+              }}
+              title="Assign back screenshot"
+            >
+              {secondaryScreenshotId ? 'Back ✓' : 'Back'}
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowAssigner(showAssigner === 'primary' ? false : 'primary');
+            }}
+            className="text-[10px] px-1.5 py-0.5 rounded transition-colors hover:bg-white/10"
+            style={{
+              background: screenshotId ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.08)',
+              color: screenshotId ? 'var(--accent)' : 'var(--muted)',
+            }}
+            title="Assign screenshot"
+          >
+            {screenshotId ? 'Change' : 'Assign'}
+          </button>
+        )}
+
         {isHovered && (
           <button
             onClick={(e) => {
@@ -131,6 +232,24 @@ export default function ScreenshotPreview({
           >
             Export
           </button>
+        )}
+
+        {/* Assigner popover */}
+        {showAssigner === 'primary' && (
+          <ScreenshotAssigner
+            screenshots={screenshots}
+            currentScreenshotId={screenshotId}
+            onAssign={(id) => onAssignScreenshot(slideId, id, false)}
+            onClose={() => setShowAssigner(false)}
+          />
+        )}
+        {showAssigner === 'secondary' && (
+          <ScreenshotAssigner
+            screenshots={screenshots}
+            currentScreenshotId={secondaryScreenshotId ?? null}
+            onAssign={(id) => onAssignScreenshot(slideId, id, true)}
+            onClose={() => setShowAssigner(false)}
+          />
         )}
       </div>
     </div>

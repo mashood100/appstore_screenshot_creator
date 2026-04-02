@@ -1,6 +1,6 @@
 'use client';
 
-import { SlideProps } from '../types';
+import { SlideProps, resolveScreenshot } from '../types';
 import SlideWrapper from './SlideWrapper';
 import Phone from '../mockups/Phone';
 import IPad from '../mockups/IPad';
@@ -12,8 +12,8 @@ import { STYLE_CONFIGS, hexOpacity, getDeviceShadow } from '../constants';
 
 export default function EcosystemSlide(props: SlideProps) {
   const { canvasW, canvasH, theme, copy, screenshots, device, slideConfig, stylePreset, onTextChange, isEditable, onPositionChange } = props;
-  const screenshotSrc1 = screenshots[slideConfig.screenshotIndex]?.dataUrl || screenshots[0]?.dataUrl || null;
-  const screenshotSrc2 = screenshots[(slideConfig.screenshotIndex + 1) % Math.max(screenshots.length, 1)]?.dataUrl || screenshots[0]?.dataUrl || null;
+  const screenshotSrc1 = resolveScreenshot(screenshots, slideConfig.screenshotId);
+  const screenshotSrc2 = resolveScreenshot(screenshots, slideConfig.secondaryScreenshotId);
   const isIPad = device === 'ipad';
   const sc = STYLE_CONFIGS[stylePreset];
 

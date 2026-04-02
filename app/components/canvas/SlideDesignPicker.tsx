@@ -92,7 +92,7 @@ export default function SlideDesignPicker({ onSelect, onClose }: SlideDesignPick
               type: design.type,
               categoryLabel: design.defaultCategoryLabel,
               headline: isPanoramic ? 'Your App\nTagline Here' : design.defaultHeadline,
-              screenshotIndex: 0,
+              screenshotId: state.screenshots[0]?.id ?? null,
               layout: design.defaultLayout,
               ...(isPanoramic ? { pairPosition: 'left' as const } : {}),
             };
@@ -121,7 +121,7 @@ export default function SlideDesignPicker({ onSelect, onClose }: SlideDesignPick
               type: 'panoramic',
               categoryLabel: '',
               headline: 'Another Great\nFeature',
-              screenshotIndex: 1,
+              screenshotId: state.screenshots[1]?.id ?? state.screenshots[0]?.id ?? null,
               layout: 'centered',
               pairPosition: 'right',
             } : null;
