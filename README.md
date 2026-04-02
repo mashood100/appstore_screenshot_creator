@@ -40,7 +40,7 @@ Indie developers spend **hours in Figma** crafting App Store screenshots — or 
 <tr>
 <td width="50%">
 
-### 🎨 Professional Design System
+### Professional Design System
 - **3 curated themes** — Clean Light, Dark Bold, Warm Editorial
 - **6 style presets** — Minimal, Moody, Organic, Colorful, Gradient, Flat
 - **Custom brand colors** — accent, text, and background
@@ -49,7 +49,7 @@ Indie developers spend **hours in Figma** crafting App Store screenshots — or 
 </td>
 <td width="50%">
 
-### 📐 Pixel-Perfect Export
+### Pixel-Perfect Export
 - **Exact App Store Connect dimensions** from 5.5" to 6.9" iPhone
 - **iPad support** — 10.5" to 13" iPad Pro M4
 - **High-res PNG export** — individual or batch
@@ -60,7 +60,7 @@ Indie developers spend **hours in Figma** crafting App Store screenshots — or 
 <tr>
 <td width="50%">
 
-### 🖼️ 7 Slide Types
+### 7 Slide Types
 - **Hero** — App icon + tagline + phone mockup
 - **Differentiator** — What makes your app unique
 - **Ecosystem** — Two-phone layout for multi-device
