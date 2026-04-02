@@ -83,9 +83,6 @@ Indie developers spend **hours in Figma** crafting App Store screenshots — or 
 </tr>
 </table>
 
-### 🌍 Localization Ready
-
-Built-in support for **14 languages** including RTL layouts for Arabic, Hebrew, Farsi, and Urdu. Switch locales from the toolbar and export localized screenshot sets in seconds.
 
 ### 🎭 Decorative Elements
 
@@ -118,19 +115,6 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) and start creating! 🎉
 
-### Environment Variables (Optional)
-
-Firebase Analytics is optional. To enable it, create a `.env.local` file:
-
-```env
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
-```
 
 > The app works perfectly fine without Firebase — analytics are completely optional.
 
@@ -235,7 +219,7 @@ graph LR
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 | Technology | Purpose |
 |-----------|---------|
@@ -249,7 +233,7 @@ graph LR
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are what make the open-source community amazing. Any contributions you make are **greatly appreciated**.
 
@@ -261,16 +245,11 @@ Contributions are what make the open-source community amazing. Any contributions
 
 ### Ideas for Contributions
 
-- [ ] 🎨 More theme presets (neon, pastel, monochrome)
-- [ ] 📱 Android Play Store dimensions support
-- [ ] 🖼️ More slide templates (testimonial, pricing, comparison)
-- [ ] 💾 Save/load project as JSON
-- [ ] 🔄 Slide reordering via drag-and-drop
-- [ ] 🌈 Gradient background editor
-- [ ] 📤 Direct upload to App Store Connect API
-- [ ] 🎬 Video screenshot support (app previews)
-- [ ] 🤖 AI-powered headline suggestions
-- [ ] 🖥️ Mac App Store screenshot support
+- [ ]  More theme presets (neon, pastel, monochrome)
+- [ ]  More slide templates (testimonial, pricing, comparison)
+- [ ]  Slide reordering via drag-and-drop
+- [ ]  Gradient background editor
+- [ ] Mac App Store screenshot support
 
 ---
 
