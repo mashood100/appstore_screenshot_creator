@@ -2,9 +2,12 @@
 
 # 📱 App Store Screenshot Generator
 
-### Create stunning, professional App Store screenshots in seconds — completely free.
+### Free, open-source App Store screenshot maker for iPhone and iPad
 
-**No watermarks · No sign-up · 100% open source**
+Design App Store marketing screenshots in your browser and export them at exact App Store Connect sizes.
+**No watermark. No sign-up. No paid tier.**
+
+### 👉 [Open the generator](https://appstore-screenshot-creator.vercel.app)
 
 [![Next.js](https://img.shields.io/badge/Next.js_16-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
@@ -14,113 +17,58 @@
 
 <br />
 
-<img src="screenshot/screenshot.png" alt="App Store Screenshot Generator — Dashboard Preview" width="100%" style="border-radius: 12px;" />
+<img src="screenshot/screenshot.png" alt="App Store screenshot generator editor with iPhone screenshot slides, theme presets, brand colors and font options" width="100%" style="border-radius: 12px;" />
 
 <br />
 
-[**🚀 Try Live Demo**](#getting-started) · [**📖 Documentation**](#features) · [**🐛 Report Bug**](../../issues) · [**💡 Request Feature**](../../issues)
+[**🚀 Live app**](https://appstore-screenshot-creator.vercel.app) · [**✨ Features**](#-features) · [**📐 Export sizes**](#-supported-export-sizes) · [**💻 Run locally**](#-run-it-locally) · [**🐛 Report a bug**](../../issues)
 
 </div>
 
 ---
 
-## 🤔 Why This Exists
+## 🤔 Why this exists
 
-Indie developers spend **hours in Figma** crafting App Store screenshots — or pay **$50–$200+** for tools like AppMockUp, Screenshots Pro, or LaunchMatic. Most free tools slap on watermarks or gate features behind paywalls.
+Good App Store screenshots matter for App Store Optimization (ASO), but making them is slow. Indie developers spend hours in Figma, or pay for subscription tools, and many free tools add watermarks or lock exports behind a paywall.
 
-**This changes that.** A fully-featured, browser-based screenshot generator that rivals paid tools — and it's **free forever**.
-
-> Stop wasting time on screenshots. Start shipping your app.
+This is a free alternative that runs entirely in your browser: upload your app screenshots, pick a layout, edit the text, and export PNGs that are ready to upload to App Store Connect.
 
 ---
 
 ## ✨ Features
 
-<table>
-<tr>
-<td width="50%">
+### 🎨 Design
+- **3 themes:** Clean Light, Dark Bold, and Warm Editorial, plus your own brand colors
+- **6 style presets:** Clean / Minimal, Dark / Moody, Warm / Organic, Bold / Colorful, Gradient Heavy, and Flat
+- **10 Google Fonts,** including Inter, Poppins, DM Sans, and Space Grotesk
+- **Decorative layers:** gradient blobs, glow orbs, device shadows, and your own floating UI elements
 
-### Professional Design System
-- **3 curated themes** — Clean Light, Dark Bold, Warm Editorial
-- **6 style presets** — Minimal, Moody, Organic, Colorful, Gradient, Flat
-- **Custom brand colors** — accent, text, and background
-- **10 premium Google Fonts** — Inter, Poppins, Space Grotesk, and more
+### 🧩 7 slide layouts
+- **Hero:** app icon, tagline, and phone mockup
+- **Differentiator:** what makes your app different
+- **Ecosystem:** two-phone layout for multi-device apps
+- **Feature Spotlight:** one feature in focus
+- **Trust Signal:** a bold, text-only slide
+- **More Features:** a grid of feature pills
+- **Panoramic Pair:** two slides that connect into one continuous image
 
-</td>
-<td width="50%">
+### ✏️ Editing
+- Click any text on a slide to edit it, and drag it to reposition
+- Assign each uploaded screenshot to a specific slide
+- See every change in a live preview
 
-### Pixel-Perfect Export
-- **Exact App Store Connect dimensions** from 5.5" to 6.9" iPhone
-- **iPad support** — 10.5" to 13" iPad Pro M4
-- **High-res PNG export** — individual or batch
-- **No compression, no quality loss**
+### 📤 Export
+- Exact App Store Connect sizes for iPhone (5.5" to 6.9") and iPad (10.5" to 13")
+- Full-resolution PNGs, one slide at a time or all at once
+- Rendered on your device: your screenshots are never uploaded to a server
 
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-### 7 Slide Types
-- **Hero** — App icon + tagline + phone mockup
-- **Differentiator** — What makes your app unique
-- **Ecosystem** — Two-phone layout for multi-device
-- **Feature Spotlight** — Single feature showcase
-- **Trust Signal** — Bold text-only identity slide
-- **More Features** — Feature pill grid
-- **Panoramic Pair** — Connected dual-slide flow
-
-</td>
-<td width="50%">
-
-### 🛠️ Built for Speed
-- **Inline text editing** — click to edit directly on slides
-- **Drag-to-reposition** text anywhere on the canvas
-- **Screenshot assignment** — map screenshots to specific slides
-- **Real-time preview** — see changes instantly
-- **Export all slides** with one click
-
-</td>
-</tr>
-</table>
-
-
-### 🎭 Decorative Elements
-
-Upload custom UI elements (badges, icons, floating components) and let the engine layer them with **gradient blobs**, **glow orbs**, and **device shadows** that adapt to your chosen style preset.
+### 🌍 Languages
+- Switch between 14 languages, with right-to-left layouts for Arabic and Hebrew
+- Exported files are named by language, so localized sets stay organized
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) 18+ 
-- npm, yarn, pnpm, or bun
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/appstore_screenshot_creator.git
-
-# Navigate to the project
-cd appstore_screenshot_creator
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) and start creating! 🎉
-
-
-> The app works perfectly fine without Firebase — analytics are completely optional.
-
----
-
-## 📱 Supported Export Sizes
+## 📐 Supported export sizes
 
 | Device | Size | Resolution |
 |--------|------|-----------|
@@ -136,11 +84,39 @@ Open [http://localhost:3000](http://localhost:3000) and start creating! 🎉
 | iPad Pro | 11" | 1668 × 2388 |
 | iPad | 10.5" | 1668 × 2224 |
 
-All sizes match **Apple's official App Store Connect requirements**.
+All sizes match Apple's App Store Connect screenshot requirements.
 
 ---
 
-## 🏗️ Architecture
+## 🎯 How it works
+
+1. **Upload** your app screenshots and icon
+2. **Choose** a theme, style preset, brand colors, and font
+3. **Build** a set of up to 5 slides from the 7 layouts
+4. **Edit** headlines directly on the slides
+5. **Export** PNGs at the exact App Store size you need
+6. **Upload** them to App Store Connect
+
+---
+
+## 💻 Run it locally
+
+You only need this to self-host or contribute. To make screenshots, use the [live app](https://appstore-screenshot-creator.vercel.app).
+
+**Prerequisites:** [Node.js](https://nodejs.org/) 18+ and npm, yarn, pnpm, or bun
+
+```bash
+git clone https://github.com/mashood100/appstore_screenshot_creator.git
+cd appstore_screenshot_creator
+npm install
+npm run dev
+```
+
+Open <http://localhost:3000>. Firebase analytics is optional, and the app works without any configuration.
+
+---
+
+## 🏗️ Project structure
 
 ```
 app/
@@ -199,27 +175,7 @@ app/
 
 ---
 
-## 🎯 How It Works
-
-```mermaid
-graph LR
-    A[Upload Screenshots] --> B[Choose Theme & Style]
-    B --> C[Pick Slide Types]
-    C --> D[Edit Text & Position]
-    D --> E[Export to PNG]
-    E --> F[Upload to App Store Connect]
-```
-
-1. **Upload** your app screenshots and icon
-2. **Customize** theme, style preset, brand colors, and font
-3. **Build** your slide deck from 7 professional slide templates
-4. **Edit** headlines inline — click to type, drag to reposition
-5. **Export** pixel-perfect PNGs at exact App Store dimensions
-6. **Upload** directly to App Store Connect
-
----
-
-## Tech Stack
+## 🛠️ Tech stack
 
 | Technology | Purpose |
 |-----------|---------|
@@ -233,61 +189,76 @@ graph LR
 
 ---
 
-## Contributing
+## ❓ FAQ
 
-Contributions are what make the open-source community amazing. Any contributions you make are **greatly appreciated**.
+**Is it really free?**
+Yes. It's MIT licensed, with no watermark, no account, and no paid tier.
+
+**Are my screenshots uploaded anywhere?**
+No. Images stay in your browser, and the PNG export happens on your device. The live site uses basic analytics to count exports, which never include your images or text.
+
+**Which stores and devices are supported?**
+iPhone and iPad screenshots for the Apple App Store. Google Play and Mac App Store screenshots aren't supported yet.
+
+**Can I use it for commercial apps?**
+Yes. The MIT license allows personal and commercial use.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome.
 
 1. **Fork** the project
-2. **Create** your feature branch (`git checkout -b feature/amazing-feature`)
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
 3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
+4. **Push** the branch (`git push origin feature/amazing-feature`)
+5. **Open** a pull request
 
-### Ideas for Contributions
+### Ideas for contributions
 
-- [ ]  More theme presets (neon, pastel, monochrome)
-- [ ]  More slide templates (testimonial, pricing, comparison)
-- [ ]  Slide reordering via drag-and-drop
-- [ ]  Gradient background editor
+- [ ] Google Play screenshot sizes
 - [ ] Mac App Store screenshot support
+- [ ] More theme presets (neon, pastel, monochrome)
+- [ ] More slide layouts (testimonial, pricing, comparison)
+- [ ] Reorder slides with drag and drop
+- [ ] Gradient background editor
 
 ---
 
 ## ⭐ Support
 
-If this tool saved you time (or money), consider:
+If this tool saved you time or money:
 
-- ⭐ **Starring this repo** — it helps others discover it
-- 🐛 **Reporting bugs** — helps make it better for everyone
-- 📢 **Sharing on Twitter/X** — spread the word to other indie devs
-- 🛠️ **Contributing** — PRs are always welcome
+- ⭐ **Star this repo** so other developers can find it
+- 🐛 **Report bugs** to help make it better
+- 📢 **Share it** with other indie developers
+- 🛠️ **Contribute** a feature from the list above
 
 ---
 
 ## 📜 License
 
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
-Use it freely for personal and commercial projects. No attribution required (but appreciated! 💜).
+Use it freely in personal and commercial projects. Attribution isn't required, but it's appreciated.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- [Next.js](https://nextjs.org/) — The React framework for production
-- [html-to-image](https://github.com/bubkoo/html-to-image) — Client-side image generation
-- [Geist Font](https://vercel.com/font) — Beautiful typography by Vercel
-- [Google Fonts](https://fonts.google.com/) — Premium fonts for every style
-- Apple's [App Store Connect](https://developer.apple.com/app-store-connect/) — Screenshot spec reference
+- [Next.js](https://nextjs.org/): the React framework
+- [html-to-image](https://github.com/bubkoo/html-to-image): client-side image generation
+- [Geist Font](https://vercel.com/font): typography by Vercel
+- [Google Fonts](https://fonts.google.com/): fonts for every style
+- Apple's [App Store Connect](https://developer.apple.com/app-store-connect/): screenshot size reference
 
 ---
 
 <div align="center">
 
-**Built with ❤️ for indie developers everywhere.**
+**Built for indie developers everywhere.**
 
-<br />
-
-<sub>If a paid tool can do it, an open-source one should too.</sub>
+If a paid tool can do it, an open-source one should too.
 
 </div>
